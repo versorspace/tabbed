@@ -1,22 +1,20 @@
-tabbed - generic tabbed interface
-=================================
-tabbed is a simple tabbed X window container.
+# tabbed - generic tabbed interface
 
-Requirements
-------------
-In order to build tabbed you need the Xlib header files.
+### Patches/Mods in this fork of suckless's tabbed:
 
-Installation
-------------
-Edit config.mk to match your local setup (tabbed is installed into
-the /usr/local namespace by default).
+* -n sets the window class just like -c in st
+* alpha patch
 
-Afterwards enter the following command to build and install tabbed
-(if necessary as root):
+### Keybindings:
 
-    make clean install
+* Ctrl-Shift-Returns spawns new tab
+* Ctrl-Shift-L/H to move left/right (like vim bindings)
 
-Running tabbed
---------------
-See the man page for details.
+### How I launch st with tabbed:
 
+`tabbed -c -n dwmalto  st -w`
+
+```
+-c : close tabbed program when there are no windows inside it
+-n : sets window name and class
+```
