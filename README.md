@@ -19,3 +19,5 @@
 -c : close tabbed program when there are no windows inside it
 -n : sets window name and class
 ```
+
+![screencast](screencast.gif)
