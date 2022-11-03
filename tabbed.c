@@ -102,6 +102,9 @@ static void *erealloc(void *o, size_t size);
 static void expose(const XEvent *e);
 static void focus(int c);
 static void focusin(const XEvent *e);
+static void focusout(const XEvent *e);
+static Bool isfocused(void);
+static void hidetabbed(void);
 static void focusonce(const Arg *arg);
 static void focusurgent(const Arg *arg);
 static void fullscreen(const Arg *arg);
@@ -148,6 +151,7 @@ static void (*handler[LASTEvent]) (const XEvent *) = {
 	[DestroyNotify] = destroynotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
+	[FocusOut] = focusout,
 	[KeyPress] = keypress,
 	[MapRequest] = maprequest,
 	[PropertyNotify] = propertynotify,
@@ -330,6 +334,13 @@ drawbar(void)
 	int c, cc, fc, width;
 	char *name = NULL;
 
+	if (isfocused() == False)
+		hidetabbed();
+	else {
+		for (int i = 0; i < nclients; i++)
+			XMoveResizeWindow(dpy, clients[i]->win, 0, bh, ww, wh - bh);
+	}
+
 	if (nclients == 0) {
 		dc.x = 0;
 		dc.w = ww;
@@ -501,6 +512,34 @@ focusin(const XEvent *e)
 		if (focused == win)
 			focus(sel);
 	}
+}
+
+void
+focusout(const XEvent *e)
+{
+	if (isfocused() == False)
+		hidetabbed();
+}
+
+void
+hidetabbed() {
+	for (int i = 0; i < nclients; i++)
+		XMoveResizeWindow(dpy, clients[i]->win, 0, 0, ww, wh);
+}
+
+Bool
+isfocused()
+{
+	int dummy, i;
+	Window focused;
+	int tabbedfocus = False;
+
+	XGetInputFocus(dpy, &focused, &dummy);
+	for (i = 0; i < nclients; i++)
+		if (focused == clients[i]->win || focused == win)
+			tabbedfocus = True;
+
+	return tabbedfocus;
 }
 
 void
